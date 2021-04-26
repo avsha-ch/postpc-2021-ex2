@@ -29,7 +29,7 @@ public class SimpleCalculatorImplTest {
   public void when_inputIsMinus_then_outputShouldBeCorrect(){
     SimpleCalculatorImpl calculatorUnderTest = new SimpleCalculatorImpl();
     calculatorUnderTest.insertMinus();
-    String expected = "???"; // TODO: decide the expected output when having a single minus
+    String expected = "0-"; // TODO: decide the expected output when having a single minus
     assertEquals(expected, calculatorUnderTest.output());
   }
 
@@ -48,6 +48,27 @@ public class SimpleCalculatorImplTest {
   @Test
   public void when_callingDeleteLast_then_lastOutputShouldBeDeleted(){
     // todo: implement test
+    SimpleCalculatorImpl calculatorUnderTest = new SimpleCalculatorImpl();
+    // checking on empty input
+    calculatorUnderTest.deleteLast();
+    assertEquals("0", calculatorUnderTest.output());
+    // checking on sign input
+    calculatorUnderTest.insertPlus();
+    calculatorUnderTest.deleteLast();
+    assertEquals("0", calculatorUnderTest.output());
+    calculatorUnderTest.insertPlus();
+    assertEquals("0+", calculatorUnderTest.output());
+    // checking delete after output
+    calculatorUnderTest.insertDigit(5);
+    calculatorUnderTest.insertMinus();
+    calculatorUnderTest.insertDigit(2);
+    calculatorUnderTest.output();
+    calculatorUnderTest.deleteLast();
+    assertEquals("0+5-", calculatorUnderTest.output());
+    calculatorUnderTest.insertDigit(2);
+    calculatorUnderTest.insertEquals();
+    calculatorUnderTest.deleteLast();
+    assertEquals("0", calculatorUnderTest.output());
   }
 
   @Test
