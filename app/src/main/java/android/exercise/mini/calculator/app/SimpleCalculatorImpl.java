@@ -70,26 +70,24 @@ public class SimpleCalculatorImpl implements SimpleCalculator {
   public void insertMinus() {
     // todo: insert a minus
     calcHistory.add(MINUS_SIGN);
-    lastSign = MINUS_SIGN;
   }
 
   @Override
   public void insertEquals() {
     // todo: calculate the equation. after calling `insertEquals()`, the output should be the result
     //  e.g. given input "14+3", calling `insertEquals()`, and calling `output()`, output should be "17"
-    for (String input: calcHistory) {
-      if (!isSign(input)) {
-        int number = Integer.parseInt(input);
-        if (lastSign.equals(MINUS_SIGN)) {
-          lastResult -= number;
-          lastSign = PLUS_SIGN;
-        }
-        else {
-          lastResult += number;
-        }
+    for (int i = 0; i < calcHistory.size(); i++) {
+      if (isSign(calcHistory.get(i))) {
+        lastSign = calcHistory.get(i);
       }
       else {
-        lastSign = input;
+        int number = Integer.parseInt(calcHistory.get(i));
+        if (lastSign.equals(PLUS_SIGN)) {
+          lastResult += number;
+        }
+        else {
+          lastResult -= number;
+        }
       }
     }
     lastSign = PLUS_SIGN;

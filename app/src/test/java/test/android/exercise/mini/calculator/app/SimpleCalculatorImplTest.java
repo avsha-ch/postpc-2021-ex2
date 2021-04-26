@@ -74,6 +74,18 @@ public class SimpleCalculatorImplTest {
   @Test
   public void when_callingClear_then_outputShouldBeCleared(){
     // todo: implement test
+    SimpleCalculatorImpl calculatorUnderTest = new SimpleCalculatorImpl();
+    calculatorUnderTest.insertMinus();
+    calculatorUnderTest.insertDigit(5);
+    calculatorUnderTest.clear();
+    assertEquals("0", calculatorUnderTest.output());
+    calculatorUnderTest.insertDigit(5);
+    calculatorUnderTest.insertMinus();
+    calculatorUnderTest.insertDigit(3);
+    calculatorUnderTest.insertEquals();
+    assertEquals("2", calculatorUnderTest.output());
+    calculatorUnderTest.clear();
+    assertEquals("0", calculatorUnderTest.output());
   }
 
   @Test
@@ -103,6 +115,13 @@ public class SimpleCalculatorImplTest {
     SimpleCalculatorImpl secondCalculator = new SimpleCalculatorImpl();
     // TODO: implement the test based on this method's name.
     //  you can get inspiration from the test method `when_savingState_should_loadThatStateCorrectly()`
+    // creating a state on 1st calc
+    firstCalculator.insertDigit(1);
+    firstCalculator.insertPlus();
+    firstCalculator.insertDigit(1);
+    Serializable savedState = firstCalculator.saveState();
+    secondCalculator.loadState(savedState);
+    assertEquals("1+1", secondCalculator.output());
   }
 
   // TODO:
