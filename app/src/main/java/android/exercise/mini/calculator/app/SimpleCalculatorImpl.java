@@ -34,8 +34,11 @@ public class SimpleCalculatorImpl implements SimpleCalculator {
     {
       res.append(s);
     }
-    if (isSign(calcHistory.get(0))) {
+    if (isSign(res.toString())) {
       return ZERO_STR + res.toString();
+    }
+    while (res.indexOf(PLUS_SIGN) == 0) {
+      res.deleteCharAt(0);
     }
     return res.toString();
   }
@@ -50,12 +53,13 @@ public class SimpleCalculatorImpl implements SimpleCalculator {
       calcHistory.add(String.valueOf(digit));
     }
     else {
-      if (calcHistory.isEmpty()) {
+      /*if (calcHistory.isEmpty()) {
         calcHistory.add(String.valueOf(digit));
       }
       else {
         calcHistory.set(calcHistory.size() - 1, getLastInput() + digit);
-      }
+      }*/
+      calcHistory.add(String.valueOf(digit));
     }
 
   }
@@ -63,12 +67,18 @@ public class SimpleCalculatorImpl implements SimpleCalculator {
   @Override
   public void insertPlus() {
     // todo: insert a plus
+    if (isSign(getLastInput())) {
+      return;
+    }
     calcHistory.add(PLUS_SIGN);
   }
 
   @Override
   public void insertMinus() {
     // todo: insert a minus
+    if (isSign(getLastInput())) {
+      return;
+    }
     calcHistory.add(MINUS_SIGN);
   }
 
@@ -76,23 +86,45 @@ public class SimpleCalculatorImpl implements SimpleCalculator {
   public void insertEquals() {
     // todo: calculate the equation. after calling `insertEquals()`, the output should be the result
     //  e.g. given input "14+3", calling `insertEquals()`, and calling `output()`, output should be "17"
+    lastResult = 0;
+    StringBuilder number = new StringBuilder();
+    number.append(ZERO_STR);
     for (int i = 0; i < calcHistory.size(); i++) {
       if (isSign(calcHistory.get(i))) {
+        int intNumber = Integer.parseInt(number.toString());
+        if (lastSign.equals(PLUS_SIGN)) {
+          lastResult += intNumber;
+        }
+        else {
+          lastResult -= intNumber;
+        }
+        number.setLength(0);
         lastSign = calcHistory.get(i);
       }
       else {
-        int number = Integer.parseInt(calcHistory.get(i));
-        if (lastSign.equals(PLUS_SIGN)) {
-          lastResult += number;
-        }
-        else {
-          lastResult -= number;
-        }
+        number.append(calcHistory.get(i));
       }
+    }
+    if (number.length() != 0) {
+      int intNumber = Integer.parseInt(number.toString());
+      if (lastSign.equals(PLUS_SIGN)) {
+        lastResult += intNumber;
+      }
+      else {
+        lastResult -= intNumber;
+      }
+      number.setLength(0);
     }
     lastSign = PLUS_SIGN;
     calcHistory.clear();
-    calcHistory.add(String.valueOf(lastResult));
+    String res = String.valueOf(lastResult);
+    if (lastResult < 0) {
+      calcHistory.add(MINUS_SIGN);
+      calcHistory.add(res.substring(1));
+    }
+    else {
+      calcHistory.add(res);
+    }
 
   }
 
