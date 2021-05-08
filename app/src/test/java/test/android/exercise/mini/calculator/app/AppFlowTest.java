@@ -40,9 +40,11 @@ public class AppFlowTest {
   private View buttonEquals;
   private TextView textViewOutput;
 
-  /** initialize main activity with a real calculator */
+  /**
+   * initialize main activity with a real calculator
+   */
   @Before
-  public void setup(){
+  public void setup() {
     activityController = Robolectric.buildActivity(MainActivity.class);
     activityUnderTest = activityController.get();
     activityController.create().start().resume();
@@ -65,10 +67,10 @@ public class AppFlowTest {
   }
 
   @Test
-  public void flowTest1(){
+  public void flowTest1() {
     // run clicks on "13+5"
-    for (View button: Arrays.asList(
-      button1, button3, buttonPlus, button5
+    for (View button : Arrays.asList(
+            button1, button3, buttonPlus, button5
     )) {
       button.performClick();
     }
@@ -78,10 +80,10 @@ public class AppFlowTest {
 
 
   @Test
-  public void flowTest2(){
+  public void flowTest2() {
     // run clicks on "7+5<backspace>4="
-    for (View button: Arrays.asList(
-      button7, buttonPlus, button5, buttonBackspace, button4, buttonEquals
+    for (View button : Arrays.asList(
+            button7, buttonPlus, button5, buttonBackspace, button4, buttonEquals
     )) {
       button.performClick();
     }
@@ -90,4 +92,143 @@ public class AppFlowTest {
   }
 
   // TODO: add at last 10 more flow tests
+
+  @Test
+  public void flowTest3() {
+    // run clicks on "9<Clear>12<Clear>8-7="
+    for (View button : Arrays.asList(
+            button9, buttonClear, button1, button2, buttonClear,
+            button8, buttonMinus, button7, buttonEquals
+    )) {
+      button.performClick();
+    }
+
+    assertEquals("1", textViewOutput.getText().toString());
+  }
+
+  @Test
+  public void flowTest4() {
+    // run clicks on "5+7-13<DeleteLast>25"
+    for (View button : Arrays.asList(
+            button5, buttonPlus, button1, button7, buttonMinus, button1, button3,
+            buttonBackspace, button2, button5
+    )) {
+      button.performClick();
+    }
+    assertEquals("5+17-125", textViewOutput.getText().toString());
+  }
+
+  @Test
+  public void flowTest5() {
+    // run clicks on "8-7=+4=-1="
+    for (View button : Arrays.asList(
+            button8, buttonMinus, button7, buttonEquals, buttonPlus, button4,
+            buttonEquals, buttonMinus, button1, buttonEquals
+    )) {
+      button.performClick();
+    }
+    assertEquals("4", textViewOutput.getText().toString());
+  }
+
+  @Test
+  public void flowTest6() {
+    // run clicks on "999-888-222<clear>=-1" expected output is "0-1"
+    for (View button : Arrays.asList(
+            button9, button9, button9, buttonMinus,
+            button8, button8, button8, buttonMinus,
+            button2, button2, button2, buttonClear,
+            buttonEquals, buttonMinus, button1
+    )) {
+      button.performClick();
+    }
+    assertEquals("0-1", textViewOutput.getText().toString());
+  }
+
+  @Test
+  public void flowTest7() {
+    // run clicks on "999-888-222=-333"
+    for (View button : Arrays.asList(
+            button9, button9, button9, buttonMinus,
+            button8, button8, button8, buttonMinus,
+            button2, button2, button2, buttonEquals,
+            buttonMinus, button3, button3, button3
+    )) {
+      button.performClick();
+    }
+    assertEquals("-111-333", textViewOutput.getText().toString());
+  }
+
+  @Test
+  public void flowTest8() {
+    // given input "1-800-400-400=", expected output is "-1599"
+    for (View button : Arrays.asList(
+            button1, buttonMinus, button8, button0, button0,
+            buttonMinus, button4, button0, button0, buttonMinus,
+            button4, button0, button0, buttonEquals
+    )) {
+      button.performClick();
+    }
+    assertEquals("-1599", textViewOutput.getText().toString());
+  }
+
+  @Test
+  public void flowTest9() {
+    // given many sign inputs, all are ignored but the first one
+    // if insertEquals, trim the signs and return "0"
+    for (View button : Arrays.asList(
+            buttonEquals, buttonEquals, buttonEquals, buttonEquals,
+            buttonMinus, buttonMinus, buttonMinus, buttonMinus,
+            buttonPlus, buttonPlus, buttonPlus, buttonPlus,
+            buttonBackspace, buttonPlus, buttonMinus, buttonEquals
+    )) {
+      button.performClick();
+    }
+    assertEquals("0", textViewOutput.getText().toString());
+    for (View button : Arrays.asList(
+            buttonPlus, buttonMinus, buttonPlus, buttonMinus
+    )) {
+      button.performClick();
+    }
+    assertEquals("0+", textViewOutput.getText().toString());
+  }
+
+  @Test
+  public void flowTest10() {
+    // given operators between digits and then CLEAR,
+    // make sure that there are no traces of previous input
+    for (View button : Arrays.asList(
+            button1, buttonPlus, button1, buttonEquals, buttonClear,
+            button3, buttonMinus, button1, buttonEquals, buttonClear,
+            button9, button9, buttonPlus, button1, buttonEquals
+    )) {
+      button.performClick();
+    }
+    assertEquals("100", textViewOutput.getText().toString());
+  }
+
+  @Test
+  public void flowTest11() {
+    // given operators between digits and then CLEAR,
+    // make sure that there are no traces of previous input
+    for (View button : Arrays.asList(
+            button1, buttonPlus, button1, buttonEquals, buttonClear,
+            button3, buttonMinus, button1, buttonEquals, buttonClear,
+            button9, button9, buttonPlus, button1, buttonEquals
+    )) {
+      button.performClick();
+    }
+    assertEquals("100", textViewOutput.getText().toString());
+  }
+
+  @Test
+  public void flowTest12_dinaBarzilai() {
+    // given input "<BackSpace>496351" , expected output is "496351"
+    for (View button : Arrays.asList(
+            buttonBackspace, button4, button9, button6, button3, button5, button1
+    )) {
+      button.performClick();
+    }
+    assertEquals("496351", textViewOutput.getText().toString());
+  }
+
 }
